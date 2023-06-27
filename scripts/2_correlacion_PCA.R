@@ -1,5 +1,5 @@
 ### TFM - Alberto Coll Fernandez
-# Lectura y limpieza de datos
+# Analisis de Componentes Principales
 # Comenzado: 15/06/2023
 # Terminado:
 
@@ -20,7 +20,7 @@ ggthemr("fresh")
 ### Seleccion de variables y PCA ----
 
 # Seleccionar variables que incluir en el PCA. ¿Probar separando pie y tentaculo?
-datos_pca <- scale(select(datos, CAT.pie, CAT.tent, GST.pie, GST.tent, MDA.pie, MDA.tent, clorofila.total, proteina.tent, proteina.pie, TEAC.tent, TEAC.pie)) # Clorofila, peso, proteina y TEAC no son muy relevantes parece ser
+datos_pca <- scale(select(datos, CAT.pie, CAT.tent, GST.pie, GST.tent, MDA.pie, MDA.tent, TEAC.tent, TEAC.pie)) # Clorofila, peso, proteina y TEAC no son muy relevantes parece ser
 
 # Hacer matriz de correlacion
 # Ordenar luego manualmente variables segun relevancia en PCA para la grafica
@@ -34,20 +34,10 @@ ggcorr(datos_pca, label = F, label_alpha = T,
 
 # Ejecutar PCA
 PCA <- rda(na.omit(datos_pca), scale = TRUE)
-sum((as.vector(PCA$CA$eig)/sum(PCA$CA$eig))[1:2]) # queremos un 80%
+sum((as.vector(PCA$CA$eig)/sum(PCA$CA$eig))[1:4]) # queremos un 80%
 
 
 ### Graficas y resultados PCA ----
-write.csv2(as.data.frame(PCA[["CA"]][["v"]]), "./resultados/PCA_factor_loadings.csv") # Factor loadings, para excel
-
-#Biplot, ver si puedes cambiar componentes
-biplot(PCA, choices = c(1,2), type = c("text", "points"),
-       col = c("#0c8890", "#414066"), scaling = 1)
-# Esto con formato ggplot
-autoplot(PCA, arrows = T) + 
-  labs(title = "Analisis de Componentes Principales") +
-  theme_tfm()
-
 #Extraer eigenvalues y hacer Scree plot bonico con ggplot
 eigenvalues <- as.data.frame(PCA$CA$eig) %>%
   rename("eigenvalue"="PCA$CA$eig") %>% 
@@ -58,5 +48,18 @@ ggplot(eigenvalues, aes(x = PC,y = var_per)) +
   geom_line(group = 1) +
   geom_point() +
   theme_tfm()
+
+# Factor loadings, exportar en csv para hacer tabla
+write.csv2(as.data.frame(PCA[["CA"]][["v"]]), "./resultados/PCA_factor_loadings.csv")
+
+#Biplot, ver si puedes cambiar componentes
+biplot(PCA, choices = c(1,2), type = c("text", "points"),
+       col = c("#0c8890", "#414066"), scaling = 1)
+# Esto con formato ggplot
+autoplot(PCA, arrows = T) + 
+  labs(title = "Analisis de Componentes Principales") +
+  theme_tfm()
+
+
 
 
