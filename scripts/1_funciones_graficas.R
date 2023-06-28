@@ -33,14 +33,6 @@ theme_tfm <- function(){
 
 # Este es el corazon del codigo que genera las graficas. Itera los nombres de las variables, y para cada una te da su media, desviacion estandar y error para usar en las graficas. Una vez tengas las funciones de las graficas hechas, se añaden al bucle. Es necesario ponerlo en otro script, en el de descriptiva o de analisis.
 
-for (n in c(4:23)) {
-  i <- colnames(datos[4:23])[[n]]
-  tabla_summ <- datos %>%  group_by(tratamiento) %>% 
-    summarise(media = mean(get(i), na.rm = T),
-              desvest = sd(get(i), na.rm = T),
-              error = desvest/sqrt(sum(!is.na(get(i)))))
-}
-
 barras_tfm <- function(){
   ggplot(tabla_summ) +
     geom_errorbar(aes(x = tratamiento, ymax = media + error, ymin = media- error), width = 0.7, color = "gray55") +

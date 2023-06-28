@@ -20,7 +20,7 @@ ggthemr("fresh")
 ### Seleccion de variables y PCA ----
 
 # Seleccionar variables que incluir en el PCA. ¿Probar separando pie y tentaculo?
-datos_pca <- scale(select(datos, CAT.pie, CAT.tent, GST.pie, GST.tent, MDA.pie, MDA.tent, TEAC.tent, TEAC.pie)) # Clorofila, peso, proteina y TEAC no son muy relevantes parece ser
+datos_pca <- scale(select(datos, CAT.pie, CAT.tent, GST.pie, GST.tent, MDA.pie, MDA.tent, TEAC.pie, TEAC.tent)) # Clorofila, peso, proteina y TEAC no son muy relevantes parece ser
 
 # Hacer matriz de correlacion
 # Ordenar luego manualmente variables segun relevancia en PCA para la grafica
@@ -45,9 +45,13 @@ eigenvalues <- as.data.frame(PCA$CA$eig) %>%
   rownames_to_column(var = "PC")
 
 ggplot(eigenvalues, aes(x = PC,y = var_per)) +
-  geom_line(group = 1) +
-  geom_point() +
-  theme_tfm()
+  geom_line(group = 1, color = "#3EB59B") +
+  geom_point(size = 3, color = "#0c8890") +
+  theme_tfm() +
+  scale_y_continuous(labels = scales::percent, limits = c(0,0.5)) +
+  xlab("Compontenes Principales") +
+  ylab("% de variación explicada")
+
 
 # Factor loadings, exportar en csv para hacer tabla
 write.csv2(as.data.frame(PCA[["CA"]][["v"]]), "./resultados/PCA_factor_loadings.csv")
@@ -57,9 +61,26 @@ biplot(PCA, choices = c(1,2), type = c("text", "points"),
        col = c("#0c8890", "#414066"), scaling = 1)
 # Esto con formato ggplot
 autoplot(PCA, arrows = T) + 
-  labs(title = "Analisis de Componentes Principales") +
+  xlab(paste0("Componente Principal 1 (", round(eigenvalues$var_per[1]*100, 2) ,"%)")) +
+  ylab(paste0("Componente Principal 2 (", round(eigenvalues$var_per[2]*100, 2) ,"%)")) +
   theme_tfm()
 
+PCA_df <- fortify(PCA) %>% 
+  mutate(Score = ifelse(Score == "species", "variable", "observation"))
 
+ggplot() +
+  geom_point(data = filter(PCA_df, Score == "observation"),
+             aes(x = PC1, y = PC2), size = 2.5, alpha = 0.9) +
+  geom_segment(data = filter(PCA_df, Score == "variable"),
+               aes(x = 0, y = 0, xend = PC1, yend = PC2),
+               color = "#E56A1C", arrow  =arrow(length=unit(0.3,"cm"))) +
+  geom_text(data = filter(PCA_df, Score == "variable"),
+            aes(x = PC1, y = PC2, label = Label), alpha = 0.75,
+            position = "jitter" ) +
+  ylim(c(-2, 2)) +
+  xlim(c(-2.5,2.5)) +
+  xlab(paste0("Componente Principal 1 (", round(eigenvalues$var_per[1]*100, 2) ,"%)")) +
+  ylab(paste0("Componente Principal 2 (", round(eigenvalues$var_per[2]*100, 2) ,"%)")) +
+  theme_tfm()
 
-
+             
