@@ -8,6 +8,7 @@ library(tidyverse)
 library(GGally) # Correlograma
 library(ggvegan)# Biplot
 library(vegan) #PCA
+library(psych)
 
 setwd("D:/collf/Documents/GitHub/TFM-Ortiguilla")
 #source(file = "./scripts/0_data_lab.R") # Laboratorio
@@ -17,10 +18,15 @@ source(file = "./scripts/1_funciones_graficas.R")
 
 ggthemr("fresh")
 
-### Seleccion de variables y PCA ----
+### Seleccion de variables, outliers y PCA ----
 
 # Seleccionar variables que incluir en el PCA. ¿Probar separando pie y tentaculo?
 datos_pca <- scale(select(datos, CAT.pie, CAT.tent, GST.pie, GST.tent, MDA.pie, MDA.tent, TEAC.pie, TEAC.tent)) # Clorofila, peso, proteina y TEAC no son muy relevantes parece ser
+
+outlier(datos_pca) # Calcula Distancia de Mahalanobis y hace QQ plot con cuantiles de la chi cuadrado. El unico que parece un outlier mas gordo es el O4, observacion numero 9, desde un punto de vista multivariable.
+
+datos_pca <- datos_pca[-c(9), ] # El punto 9 es potencial outlier pero parece que no influencia mucho el resultado del análisis. Repetir y evaluar de nuevo cuando esten todas las variables.
+
 
 # Hacer matriz de correlacion
 # Ordenar luego manualmente variables segun relevancia en PCA para la grafica
@@ -34,7 +40,7 @@ ggcorr(datos_pca, label = F, label_alpha = T,
 
 # Ejecutar PCA
 PCA <- rda(na.omit(datos_pca), scale = TRUE)
-sum((as.vector(PCA$CA$eig)/sum(PCA$CA$eig))[1:4]) # queremos un 80%
+sum((as.vector(PCA$CA$eig)/sum(PCA$CA$eig))[1:3]) # queremos un 80%
 
 
 ### Graficas y resultados PCA ----
@@ -83,4 +89,5 @@ ggplot() +
   ylab(paste0("Componente Principal 2 (", round(eigenvalues$var_per[2]*100, 2) ,"%)")) +
   theme_tfm()
 
-             
+      
+
