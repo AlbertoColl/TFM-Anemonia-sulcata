@@ -1,7 +1,7 @@
 ### TFM - Alberto Coll Fernandez
 # Definicion de graficas
 # Comenzado: 15/06/2023
-# Terminado:
+# Terminado: 26/06/2023
 
 
 ## SETUP ----
@@ -17,7 +17,7 @@ ggthemr("fresh")
 #source(file = "./scripts/0_data_lab.R") # Laboratorio
 source(file = "./scripts/0_data_home.R") # En casa
 
-## TEMA DE GRAFICAS ----
+## Definicion del tema y formato de las graficas ----
 theme_tfm <- function(){
   theme(panel.background = element_rect(fill = "gray99"),
         axis.text = element_text(size = 10),
@@ -28,7 +28,7 @@ theme_tfm <- function(){
         #strip.background = element_rect(colour = "black")
 }
 
-## Grafica de barras ----
+## Definicion de grafica de barras ----
 
 
 # Este es el corazon del codigo que genera las graficas. Itera los nombres de las variables, y para cada una te da su media, desviacion estandar y error para usar en las graficas. Una vez tengas las funciones de las graficas hechas, se añaden al bucle. Es necesario ponerlo en otro script, en el de descriptiva o de analisis.
@@ -37,17 +37,18 @@ barras_tfm <- function(){
   ggplot(tabla_summ) +
     geom_errorbar(aes(x = tratamiento, ymax = media + error, ymin = media- error), width = 0.7, color = "gray55") +
     geom_col(aes(x = tratamiento, y = media, fill = tratamiento)) +
+    geom_text(aes(x = tratamiento, y = media + error, label = tukey),
+              color = "grey5", vjust = -0.5, size = 4) +
     ylab(case_when(
       i == "clorofila.total" ~ "μg clorofila /g tejido",
-      i == "proteina_t" | i == "proteina_p"  ~ "protein mg / ml",
-      i == "MDA_t" | i == "MDA_p" ~ "MDA μM ",
-      i == "TEAC_t" | i == "TEAC_p"~ "Trolox equivalent μM",
-      i == "GR_t" | i == "GR_p" ~ "mU / mg  of protein",
-      i == "GST_t" | i == "GST_p" ~ "mU / mg  of protein",
-      i == "DTD_t" | i == "DTD_p" ~ "mU / mg  of protein",
-      TRUE ~ "U / mg  of protein")) +
+      i == "proteina.tent" | i == "proteina.pie"  ~ " mg proteína / ml",
+      i == "MDA.pie" | i == "MDA.tent" ~ "μM  MDA",
+      i == "TEAC.pie" | i == "TEAC.tent"~ "μM equivalentes de Trolox",
+      i == "GST.pie" | i == "GSTtent" ~ "mU / mg  de proteína",
+      i == "DTD.pie" | i == "DTD.tent" ~ "mU / mg  de proteína",
+      TRUE ~ "U / mg  de proteína")) +
     xlab("Tratamiento") +
-    scale_fill_manual(values = c("#0c8890", "#3EB59B", "#FBBC4C", "#E56A1C")) + # Colores 1
+    scale_fill_manual(values = c("#0c8890", "#3EB59B","#E56A1C", "#FBBC4C")) + # Colores 1
     #scale_fill_manual(values = c("#414066", "#69B4AB", "#FBBC4C", "#EF476F")) + # Colores 2
     #scale_fill_manual(values = c("#1E5D56", "#0C8890", "#3EB59B", "#FBBC4C")) + # Colores 3
     theme_tfm()
