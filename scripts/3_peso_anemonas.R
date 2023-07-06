@@ -46,3 +46,9 @@ resumen <- datos %>%
 ggsave("./resultados/graficas/peso_n.png", width = 1000, height = 750, units = "px",
        scale = 2, dpi = "retina")
 
+
+
+
+ggplot(datos) +
+  geom_boxplot(aes(x = tratamiento, y = peso, fill = medida), alpha = 0.2) +
+  geom_point(aes(x = tratamiento, y = peso, color = medida), position = position_jitterdodge())
