@@ -32,6 +32,7 @@ datos$SOD.pie[20] <- NA # outlier, posiblemente afecta al analisis
 datos$SOD.tent[16] <- NA #outlier, enmascara diferencias
 datos$SOD.tent[5] <- NA #outlier, enmascara diferencias
 datos$MDA.pie.2[19] <- NA #outlier, sale mucho error por su culpa
+datos$DTD.pie[5] <- NA
 
 
 
@@ -40,10 +41,9 @@ ggplot(datos) +
   theme_tfm()
 
 ggplot(datos) +
-  geom_boxplot(aes(y = GST.pie, x = tratamiento, fill = tratamiento), alpha = 0.6) +
-  #geom_jitter(aes(y = , x = tratamiento, color = tratamiento), width = 0.2) +
+  geom_point(aes(y = DTD.pie, x = tratamiento, color = tratamiento), size = 4, position = position_jitterdodge()) +
   theme_tfm() +
-  ylab("GST.pie") +
+  ylab("DTD.pie") +
   scale_fill_manual(values = c("#0c8890", "#3EB59B","#E56A1C",  "#FBBC4C")) +
   scale_color_manual(values = c("#0c8890", "#3EB59B","#E56A1C",  "#FBBC4C"))
 

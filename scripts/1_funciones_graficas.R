@@ -20,10 +20,10 @@ source(file = "./scripts/0_data_home.R") # En casa
 ## Definicion del tema y formato de las graficas ----
 theme_tfm <- function(){
   theme(panel.background = element_rect(fill = "gray99"),
-        axis.text = element_text(size = 10),
+        axis.text = element_text(size = 12),
         plot.title = element_text(size = 18),
         strip.text.x = element_text(size = 15, face = "bold", vjust = 0),
-        axis.title = element_text(size = 14),
+        axis.title = element_text(size = 15),
         legend.position = "none")
         #strip.background = element_rect(colour = "black")
 }
@@ -44,13 +44,22 @@ barras_tfm <- function(){
       i == "proteina.tent" | i == "proteina.pie"  ~ " mg proteína / ml",
       i == "MDA.pie" | i == "MDA.tent" ~ "μM  MDA",
       i == "TEAC.pie" | i == "TEAC.tent"~ "μM equivalentes de Trolox",
-      i == "GST.pie" | i == "GSTtent" ~ "mU / mg  de proteína",
+      i == "GST.pie" | i == "GST.tent" ~ "mU / mg  de proteína",
       i == "DTD.pie" | i == "DTD.tent" ~ "mU / mg  de proteína",
       TRUE ~ "U / mg  de proteína")) +
     xlab("Tratamiento") +
     scale_fill_manual(values = c("#0c8890", "#3EB59B","#E56A1C", "#FBBC4C")) + # Colores 1
     #scale_fill_manual(values = c("#414066", "#69B4AB", "#FBBC4C", "#EF476F")) + # Colores 2
     #scale_fill_manual(values = c("#1E5D56", "#0C8890", "#3EB59B", "#FBBC4C")) + # Colores 3
+    ylim(c(0, case_when(
+      i == "CAT.pie" ~  90,
+      i == "DTD.pie" ~  15,
+      i == "GST.pie" ~  450,
+      i == "MDA.pie.2"| i == "MDA.tent.2" ~  80,
+      i == "SOD.pie"| i == "SOD.tent" ~  150,
+      i == "TEAC.pie"| i == "TEAC.tent" ~  500,
+      i == "CAT.tent" | i == "DTD.tent" | i == "GST.tent" ~ max(tabla_summ$media) * 2,
+      TRUE ~ max(tabla_summ$media) * 1.2))) +
     theme_tfm()
   
 }
