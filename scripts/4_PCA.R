@@ -96,7 +96,7 @@ PCA_df <- fortify(PCA) %>%
   geom_vline(xintercept = 0, color = "#096A71", alpha = 0.7, linewidth = 0.05) +
   geom_point(data = filter(PCA_df, Score == "observation"),
              aes(x = PC1, y = PC2),
-             size = 2.5, alpha = 0.8, shape = 19) +
+             size = 2.5, alpha = 0.6, shape = 19, color = "#3EB59B") +
   geom_segment(data = filter(PCA_df, Score == "variable"),
                aes(x = 0, y = 0, xend = PC1, yend = PC2),
                color = "#E56A1C", alpha = 0.8, linewidth = 0.6,

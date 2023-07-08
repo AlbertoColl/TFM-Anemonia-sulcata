@@ -5,6 +5,8 @@
 
 ### SETUP ----
 library(tidyverse)
+library(car)
+library(multcompView)
 
 setwd("D:/collf/Documents/GitHub/TFM-Ortiguilla")
 datos <- read.csv2("./datos/datos_peso.csv", numerals = "warn.loss", encoding = "latin1")%>% 
@@ -103,3 +105,19 @@ ggsave("./resultados/graficas/peso_box_v2.png", width = 1000, height = 700, unit
 ggsave(plot = combi,"./resultados/graficas/peso_combinada.png", width = 1500, height = 700, units = "px",scale = 2, dpi = "retina")
 
 
+
+### ANOVA glm() ----
+
+# No siguen distribucion normal, estan sesgados a la derecha por lo que usamos distribucion gamma con glm()
+m.peso <- glm(family = Gamma(), peso ~ tratamiento:medida, datos)
+summary(m.peso)
+plot(m.peso)
+# Las graficas de diagnostico salen de maravilla
+
+# Ahora obtenemos tabla anova para el contraste. Importante, está desbalanceado así que necesitamos Anova de tipo 2
+
+(tabla_anova <- Anova(m.peso, type = 2))
+
+a <- aov(peso ~ tratamiento * medida, datos)
+tukey <- TukeyHSD(m.peso)
+cld.tukey <- multcompLetters4(a, tukey, reversed = T)

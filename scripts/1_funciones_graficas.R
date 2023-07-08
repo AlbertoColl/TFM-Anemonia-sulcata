@@ -42,7 +42,7 @@ barras_tfm <- function(){
     ylab(case_when(
       i == "clorofila.total" ~ "μg clorofila /g tejido",
       i == "proteina.tent" | i == "proteina.pie"  ~ " mg proteína / ml",
-      i == "MDA.pie" | i == "MDA.tent" ~ "μM  MDA",
+      i == "MDA.pie.2" | i == "MDA.tent.2" ~ "μM  MDA",
       i == "TEAC.pie" | i == "TEAC.tent"~ "μM equivalentes de Trolox",
       i == "GST.pie" | i == "GST.tent" ~ "mU / mg  de proteína",
       i == "DTD.pie" | i == "DTD.tent" ~ "mU / mg  de proteína",
