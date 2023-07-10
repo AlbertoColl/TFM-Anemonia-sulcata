@@ -121,3 +121,20 @@ pca_final <- grid.arrange(pca.plot, grid.arrange(scree.plot, empty), ncol = 2)
 ggsave(plot = pca_final, "./resultados/graficas/PCA_combinado.png", width = 1500, height = 800, units = "px",
        scale = 2, dpi = "retina")
 
+
+### Correlacion y regresion posteriores----
+
+datos$CAT.tent[20] <- NA
+datos$MDA.pie.2[19] <- NA
+
+ggplot(datos, aes(x = SOD.tent, y =CAT.pie)) +
+  geom_point(aes(color = tratamiento)) +
+  geom_smooth(method = "lm", se = F) +
+  scale_color_manual(values = c("#0c8890", "#3EB59B","#E56A1C", "#FBBC4C"))
+
+
+datos <- select(datos, -proteina.pie, -proteina.tent, -clorofila.total)
+summary(lm(SOD.tent ~ CAT.pie, datos))
+corrgram::corrgram(datos[4:17])
+
+cor.test(datos$MDA.tent.2, datos$CAT.tent)

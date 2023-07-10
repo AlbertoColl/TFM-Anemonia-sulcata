@@ -33,6 +33,7 @@ datos$SOD.tent[16] <- NA #outlier, enmascara diferencias
 datos$SOD.tent[5] <- NA #outlier, enmascara diferencias
 datos$MDA.pie.2[19] <- NA #outlier, sale mucho error por su culpa
 datos$DTD.pie[5] <- NA
+datos$CAT.pie[1] <- NA
 
 
 
@@ -41,9 +42,10 @@ ggplot(datos) +
   theme_tfm()
 
 ggplot(datos) +
-  geom_point(aes(y = DTD.pie, x = tratamiento, color = tratamiento), size = 4, position = position_jitterdodge()) +
+  geom_boxplot(aes(y = CAT.pie, x = tratamiento, color = tratamiento), alpha = 0) +
+  geom_point(aes(y = CAT.pie, x = tratamiento, color = tratamiento), position = position_jitterdodge()) +
   theme_tfm() +
-  ylab("DTD.pie") +
+  ylab("CAT.pie") +
   scale_fill_manual(values = c("#0c8890", "#3EB59B","#E56A1C",  "#FBBC4C")) +
   scale_color_manual(values = c("#0c8890", "#3EB59B","#E56A1C",  "#FBBC4C"))
 

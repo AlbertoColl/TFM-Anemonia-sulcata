@@ -23,9 +23,6 @@ datos$tratamiento <- factor(datos$tratamiento, levels = c("Control", "Oscuro", "
 summary(datos)
 
 ### Grafica de barras: media y SEM ----
-datos$medida <- factor(datos$medida, levels = c("inicial", "final"))
-resumen$medida <- factor(resumen$medida, levels = c("inicial", "final"))
-
 resumen <- datos %>% 
   group_by(tratamiento, medida) %>% 
   summarise(media = mean(peso, na.rm = T),
@@ -36,6 +33,8 @@ resumen <- datos %>%
             minimo = min(peso, na.rm =T),
             maximo = max(peso, na.rm = T))
 
+datos$medida <- factor(datos$medida, levels = c("inicial", "final"))
+resumen$medida <- factor(resumen$medida, levels = c("inicial", "final"))
 
 (plot <- ggplot(resumen, aes(x = tratamiento)) +
   geom_errorbar(aes(ymax = media + error, ymin = media-error, group = tratamiento:medida), position = position_dodge(width = 0.93), width = 0.7, color = "gray75") +
