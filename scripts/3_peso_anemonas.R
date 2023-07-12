@@ -108,7 +108,7 @@ ggsave(plot = combi,"./resultados/graficas/peso_combinada.png", width = 1500, he
 ### ANOVA glm() ----
 
 # No siguen distribucion normal, estan sesgados a la derecha por lo que usamos distribucion gamma con glm()
-m.peso <- glm(family = Gamma(), peso ~ tratamiento*medida, datos)
+m.peso <- glm(family = Gamma(), peso ~ tratamiento, data = filter(datos, medida == "final"))
 summary(m.peso)
 plot(m.peso)
 # Las graficas de diagnostico salen de maravilla
