@@ -108,7 +108,7 @@ ggsave(plot = combi,"./resultados/graficas/peso_combinada.png", width = 1500, he
 ### ANOVA glm() ----
 
 # No siguen distribucion normal, estan sesgados a la derecha por lo que usamos distribucion gamma con glm()
-m.peso <- glm(family = Gamma(), peso ~ tratamiento:medida, datos)
+m.peso <- glm(family = Gamma(), peso ~ tratamiento*medida, datos)
 summary(m.peso)
 plot(m.peso)
 # Las graficas de diagnostico salen de maravilla
@@ -117,6 +117,19 @@ plot(m.peso)
 
 (tabla_anova <- Anova(m.peso, type = 2))
 
-a <- aov(peso ~ tratamiento * medida, datos)
-tukey <- TukeyHSD(m.peso)
-cld.tukey <- multcompLetters4(a, tukey, reversed = T)
+tukey <- TukeyHSD(tabla_anova)
+cld.tukey <- multcompLetters4(m.peso, tukey, reversed = T)
+letras <- rownames_to_column(as.data.frame(cld.tukey$`tratamiento:medida`$Letters))
+letras <- letras %>%
+  mutate(rowname = str_split(rowname, ":"),
+         letras = cld.tukey$`tratamiento:medida`$Letters)
+for (n in length(letras$rowname)) {
+  letras$tratamiento[[n]] <- letras$rowname[[n]][1]
+  letras$medida[[n]] = letras$rowname[[n]][2]
+  
+}
+
+    #   medida = str_split(rowname, ":")[[1]][2]) %>% 
+  #select(tratamiento, medida, letras)
+
+merge(resumen, letras)
