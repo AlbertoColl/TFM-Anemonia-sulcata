@@ -13,7 +13,7 @@ setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
 source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
 #source(file = "./scripts/0_data_home.R") # En casa
 
-source(file = "./scripts_enero_2024/1_funciones_graficas.R") # Arreglar setwd en el script citado
+source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 
 ### Análisis exploratorio de datos ----
 
