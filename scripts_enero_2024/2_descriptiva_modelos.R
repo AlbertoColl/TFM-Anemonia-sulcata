@@ -19,8 +19,9 @@ source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 
 # Comprobacion de normalidad de las variables respuestas GLOBALMENTE
 
-hist(datos$peso.total)
-shapiro.test(datos$peso.total)
+hist(datos$SOD.tent)
+scale(datos$SOD.pie)
+shapiro.test(datos$SOD.pie)
 
 # SOD mas menos bien en el pie y peor en el tentaculo. Shapiro no significativo
 # CAT pie tiene algunos valores extremos, Shapiro salta por poco. Tent igual pero no muy sig, Aceptable creo
@@ -32,8 +33,8 @@ shapiro.test(datos$peso.total)
 
 # Comprobando normalidad por grupos
 
-hist(filter(datos, tratamiento == "Shade")$peso.total)
-shapiro.test(filter(datos, tratamiento == "IMTA")$peso.total)
+hist(filter(datos, tratamiento == "Shade")$SOD.pie)
+shapiro.test(filter(datos, tratamiento == "Low_salinity")$SOD.pie)
 
 # GST en pie sale un poco rara en el tratamiento sombreado. Hay un valor que es 715 de repente. Yo probaria a quitarlo
 # G6PDH, MDA y CAT estan bien por grupos
@@ -41,7 +42,7 @@ shapiro.test(filter(datos, tratamiento == "IMTA")$peso.total)
 ### Estudio de datos anómalos e influyentes ---- 
 
 
-ggplot(datos, aes(x = tratamiento, y = SOD.tent, color = tratamiento)) +
+ggplot(datos, aes(x = tratamiento, y = SOD.pie, color = tratamiento)) +
   #geom_boxplot(alpha = 0) +
   geom_point(position = position_jitter(height = 0, width = 0.1), size = 2)
 
@@ -51,12 +52,11 @@ ggplot(datos, aes(x = tratamiento, y = SOD.tent, color = tratamiento)) +
 # [9,11] esta muy por encima, quitarlo. Es Shade en GST tent.
 
 # datos[20,6] <- NA # NO HACE FALTA QUITARLO
-datos[8,5] <- NA # POTENCIAL OUTLIER EN CLOROFILA
-datos[8,10] <- NA # potencial outlier en GST pie
-datos[8,8] <- NA # potencial outlier en CAT pie
-datos[9,11] <- NA # potencial outlier en GST tent
-datos$SOD.tent[16] <- NA #outlier, enmascara diferencias
-datos$SOD.tent[5] <- NA #outlier, enmascara diferencias
+#datos$clorofila.total[8] <- NA # POTENCIAL OUTLIER EN CLOROFILA
+datos$GST.pie[8] <- NA # potencial outlier en GST pie, rompe normalidad
+datos$CAT.pie[8] <- NA # potencial outlier en CAT pie, rompe normalidad
+datos$GST.tent[9] <- NA # potencial outlier en GST tent, rompe normalidad
+datos$SOD.pie[8] <- NA # POTENCIAL OUTLIER, rompe normalidad
 
 datos <- datos %>% select(-c(MDA.pie, MDA.tent)) # Primera medida de MDA no vale
 
