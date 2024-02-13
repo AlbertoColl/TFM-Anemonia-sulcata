@@ -102,7 +102,26 @@ for (n in c(1:18)) {
     tabla_summ$tukey <- c("", "", "", "")
   }
   (p <- barras_tfm())
-  ggsave(paste0("./resultados/graficas2/", i, ".png"), width = 800, height = 1000, units = "px", #para clorofila 730, 730
-         scale = 2, dpi = "retina")
+  saveRDS(p, paste0("./resultados/graficas2/", i, "_RDS"))
+  ggsave(paste0("./resultados/graficas2/", i, ".png"), width = 90, height = 112.5, units = "mm", dpi = 1000)
 }
+
+
+### Patchwork para figuras finales ----
+
+# Problema: no salen los puntos de datos
+# Solo se conservan en 3 graficas por algun motivo que no entiendo.
+library(patchwork)
+plots <- list()
+for (n in c(1:18)){
+  i <- colnames(datos[4:21])[[n]]
+  print(c(i,n))
+  plots[[i]] <- readRDS(paste0("./resultados/graficas2/", i, "_RDS"))
+  
+}
+
+plots <- lapply(colnames(datos[4:21]), function(x){readRDS(paste0("./resultados/graficas2/", x, "_RDS"))})
+
+wrap_plots(plots[3:11])
+wrap_plots(plots[12:18])
 
