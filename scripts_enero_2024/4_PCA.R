@@ -1,7 +1,7 @@
 #### Revision analisis TFM - Alberto Coll Fernandez
 # Analisis de componentes principales y cluster
-# Comenzado:01/02/2024
-# Terminado 
+# Comenzado: 01/02/2024
+# Terminado: 09/02/2024
 
 
 ### SETUP ----
@@ -10,16 +10,22 @@ library(psych) #correlacion
 library(MVN)
 library(factoextra)
 
-setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
-source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
-#source(file = "./scripts/0_data_home.R") # En casa
+#setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
+setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") #portatil
+
+#source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
+source(file = "./scripts_enero_2024/0_data_home.R") # portatil
 
 source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 ggthemr("fresh")
 
-datos <- datos %>% select(-c(MDA.pie, MDA.tent, proteina.pie, proteina.tent)) # Primera medida de MDA no vale
-# Proteina es linealmente dependiente del resto.
-
+# Primera medida de MDA no vale
+# Proteina es linealmente dependiente del resto de enzimas
+datos <- datos %>% select(-c(MDA.pie, MDA.tent, proteina.pie, proteina.tent)) %>% 
+  rename(MDA.col = MDA.pie.2, MDA.tent = MDA.tent.2,
+         SOD.col = SOD.pie, CAT.col = CAT.pie,
+         GST.col = GST.pie, DTD.col = DTD.pie,
+         G6PDH.col = G6PDH.pie, TEAC.col = TEAC.pie)
 
 ### Matriz de correlacion ----
 datos_cor <- cor(datos[,6:19])
@@ -49,25 +55,30 @@ cp$sdev^2 # 5 componentes segun regla de Kaiser
 
 ### Biplot y graficas ----
 
-fviz_pca_biplot(cp, col.ind = datos$tratamiento,
+(biplot <- fviz_pca_biplot(cp, col.ind = datos$tratamiento,
                 palette = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C"),
                 alpha.var = "cos2", col.var = "gray20",
-                repel = TRUE, label = "var", ggtheme = theme_tfm())
+                repel = TRUE, label = "var", ggtheme = theme_tfm()))
 
-fviz_pca_ind(cp, col.ind = datos$tratamiento,
+(indplot <- fviz_pca_ind(cp, col.ind = datos$tratamiento,
              palette = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C"),
-             addEllipses = T, legend.title = "Treatment")
+             addEllipses = T, legend.title = "Treatment",
+             ggtheme = theme_tfm()) +
+    theme(legend.position = "right"))
 
-fviz_pca_var(cp, col.var = "contrib",
+(varplot <- fviz_pca_var(cp, col.var = "contrib",
              gradient.cols = c("#0c8890", "#54B65D","#E56A1C"),
-             repel = TRUE,
-             ggtheme = theme_tfm())
-
-
-
+             repel = TRUE, legend.title = "Contribution",
+             ggtheme = theme_tfm()) +
+    theme(legend.position = "right"))
+library(patchwork)
+win.graph()
+(p1 <- varplot + indplot )
+ggsave("./resultados/graficas2/PCA_doble.png", width = 2000, height = 1000, units = "px", #para clorofila 730, 730
+       scale = 2, dpi = "retina")
 ### Añadimos las puntuaciones a los datos ----
-datos_pca <- datos[-8,]
-datos_pca <- cbind(datos_pca, cp1 = cp2$scores[,1], cp2 = cp2$scores[,2], cp3 = cp2$scores[,3], cp4 = cp2$scores[,4])
+datos_pca <- datos
+datos_pca <- cbind(datos_pca, cp1 = cp$scores[,1], cp2 = cp$scores[,2], cp3 = cp$scores[,3], cp4 = cp$scores[,4])
 
 ### Ver componentes principales por grupo ----
 i <- "cp3"
@@ -80,7 +91,7 @@ ggplot(tabla_summ, aes(x = tratamiento, y = media, color = tratamiento)) +
   geom_errorbar(aes(ymax = media + error, ymin = media- error), width = 0.7, color = "gray55") +
   geom_point(data = datos_pca, aes(y = cp1), position = position_jitter(height = 0, width = 0.1), size = 2)
 
-#### ANOVAS por PC----
+### ANOVAS por PC----
 m1 <- aov(cp4 ~ tratamiento, datos_pca)
 summary(m1)
 
