@@ -11,18 +11,17 @@ library(ggthemr)
 # Directorio en laboratorio: C:/Users/Usuario/Documents/TFM-Ortiguilla
 # Directorio en portatil: D:/collf/Documents/GitHub/TFM-Ortiguilla
 
-#setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
-setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") #portatil
+setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
 ggthemr("fresh")
 
-#source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
-source(file = "./scripts_enero_2024/0_data_home.R") # En casa
+source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
+#source(file = "./scripts_enero_2024/0_data_home.R") # En casa
 
 ## Definicion del tema y formato de las graficas ----
 theme_tfm <- function(){
   theme(panel.background = element_rect(fill = "gray99"),
         axis.text = element_text(size = 9),
-        plot.title = element_blank(),
+        plot.title = element_text(size = 14, face = "bold", hjust = 1),
         strip.text.x = element_text(size = 12, face = "bold", vjust = 0),
         axis.title = element_text(size = 12),
         legend.position = "none",
@@ -41,7 +40,7 @@ barras_tfm <- function(){
   ggplot() +
     geom_errorbar(data = tabla_summ, aes(x = tratamiento, ymax = media + error, ymin = media- error), width = 0.7, color = "gray55") +
     geom_col(data = tabla_summ, aes(x = tratamiento, y = media, fill = tratamiento, color = tratamiento),  alpha = 0.1, linewidth = 1) +
-    geom_point(data = datos, aes(x = tratamiento, y = get(i), color = tratamiento), alpha = 0.7, size = 2) +
+    #geom_point(data = datos, aes(x = tratamiento, y = get(i), color = tratamiento), alpha = 0.7, size = 2) +
     geom_text(data = tabla_summ, aes(x = tratamiento, y = media + error, label = tukey), color = "grey5", vjust = -0.8, size = 3.5, fontface = "bold") +
     ylab(case_when(
       i == "clorofila.total" ~ "chlorophyll μg/tissue g",

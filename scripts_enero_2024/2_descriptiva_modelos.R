@@ -6,6 +6,7 @@
 library(tidyverse)
 library(car)
 library(multcompView)
+library(patchwork)
 
 ### Setup----
 
@@ -101,7 +102,9 @@ for (n in c(1:18)) {
   } else {
     tabla_summ$tukey <- c("", "", "", "")
   }
-  (p <- barras_tfm())
+  (p <- barras_tfm() + labs(title = case_when(str_detect(i, "pie") == T  ~ "A",
+                                               str_detect(i, "tent") == T ~ "B",
+                                               TRUE ~ "")))
   saveRDS(p, paste0("./resultados/graficas2/", i, "_RDS"))
   ggsave(paste0("./resultados/graficas2/", i, ".png"), width = 90, height = 112.5, units = "mm", dpi = 1000)
 }
@@ -111,17 +114,45 @@ for (n in c(1:18)) {
 
 # Problema: no salen los puntos de datos
 # Solo se conservan en 3 graficas por algun motivo que no entiendo.
-library(patchwork)
 plots <- list()
-for (n in c(1:18)){
-  i <- colnames(datos[4:21])[[n]]
-  print(c(i,n))
-  plots[[i]] <- readRDS(paste0("./resultados/graficas2/", i, "_RDS"))
-  
-}
-
 plots <- lapply(colnames(datos[4:21]), function(x){readRDS(paste0("./resultados/graficas2/", x, "_RDS"))})
 
-wrap_plots(plots[3:11])
-wrap_plots(plots[12:18])
+# SOD
+(p2 <- wrap_plots(plots[3:4]))
+ggsave(paste0("./resultados/graficas3/SOD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
+# CAT
+(p3 <- wrap_plots(plots[5:6]))
+ggsave(paste0("./resultados/graficas3/CAT.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+# GST
+(p4 <- wrap_plots(plots[7:8]))
+ggsave(paste0("./resultados/graficas3/GST.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+# DTD
+(p5 <- wrap_plots(plots[9:10]))
+ggsave(paste0("./resultados/graficas3/DTD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+# G6PDH
+(p6 <- wrap_plots(plots[11:12]))
+ggsave(paste0("./resultados/graficas3/G6PDH.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+# MDA
+(p7 <- wrap_plots(plots[13:14]))
+ggsave(paste0("./resultados/graficas3/MDA.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+# TEAC
+(p8 <- wrap_plots(plots[17:18]))
+ggsave(paste0("./resultados/graficas3/TEAC.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+
+### Otros test: ----
+
+t.test(datos$G6PDH.pie, datos$G6PDH.tent, paired = T)
+# Diferente nivel de SOD en pie y tentaculo, paired t test con pvalor 5.691e-05
+# Diferente nivel de CAT en pie y tentaculo, paired t test con pvalor 4.073e-07
+# gst tambien con p valor 9.043e-07
+# DTD TB CON P VALOR 8.062e-10
+# glucosa 6 fosfato dh tb 3.01e-05
+# mda 0.005902 tambien diferentes.
+# teac no, niveles iguales en pie y tentaculo

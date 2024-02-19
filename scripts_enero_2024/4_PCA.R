@@ -10,11 +10,11 @@ library(psych) #correlacion
 library(MVN)
 library(factoextra)
 
-#setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
-setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") #portatil
+setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
+#setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") #portatil
 
-#source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
-source(file = "./scripts_enero_2024/0_data_home.R") # portatil
+source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
+#source(file = "./scripts_enero_2024/0_data_home.R") # portatil
 
 source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 ggthemr("fresh")
@@ -42,7 +42,7 @@ cortest.bartlett(datos[,6:19], nrow(datos))
 KMO(datos_cor) # 0.49 global, aceptable. GST tent, G6PDH tent y TEAC tent tienen poca correlacion parcial con el resto pero aportan informcion importante.
 
 ### Modelo PCA y eleccion de numero de componentes ----
-cp <- princomp(~., data = datos[,6:19], cor = TRUE)
+cp2 <- princomp(~., data = as.data.frame(scale(datos[,6:19])), cor = TRUE)
 
 cp$loadings
 write.csv2(cp$loadings, file = "./resultados/cargas.factoriales.csv")
@@ -64,18 +64,18 @@ cp$sdev^2 # 5 componentes segun regla de Kaiser
              palette = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C"),
              addEllipses = T, legend.title = "Treatment",
              ggtheme = theme_tfm()) +
-    theme(legend.position = "right"))
+    theme(legend.position = "right") + labs(title = "B"))
 
-(varplot <- fviz_pca_var(cp, col.var = "contrib",
-             gradient.cols = c("#0c8890", "#54B65D","#E56A1C"),
+(varplot <- fviz_pca_var(cp2, col.var = "contrib",
+             gradient.cols = c("#0c8890","#54B65D", "#D42828"),
              repel = TRUE, legend.title = "Contribution",
              ggtheme = theme_tfm()) +
-    theme(legend.position = "right"))
+    theme(legend.position = "right") + labs(title = "A"))
 library(patchwork)
 win.graph()
-(p1 <- varplot + indplot )
-ggsave("./resultados/graficas2/PCA_doble.png", width = 2000, height = 1000, units = "px", #para clorofila 730, 730
-       scale = 2, dpi = "retina")
+(p1 <- wrap_plots(varplot + indplot ))
+ggsave("./resultados/graficas3/PCA_doble.png", width = 180, height = 80, units = "mm", dpi = 1000, scale = 1.25)
+
 ### Añadimos las puntuaciones a los datos ----
 datos_pca <- datos
 datos_pca <- cbind(datos_pca, cp1 = cp$scores[,1], cp2 = cp$scores[,2], cp3 = cp$scores[,3], cp4 = cp$scores[,4])
