@@ -9,6 +9,8 @@ library(tidyverse)
 library(psych) #correlacion
 library(MVN)
 library(factoextra)
+library(patchwork)
+
 
 setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
 #setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") #portatil
@@ -42,7 +44,7 @@ cortest.bartlett(datos[,6:19], nrow(datos))
 KMO(datos_cor) # 0.49 global, aceptable. GST tent, G6PDH tent y TEAC tent tienen poca correlacion parcial con el resto pero aportan informcion importante.
 
 ### Modelo PCA y eleccion de numero de componentes ----
-cp2 <- princomp(~., data = as.data.frame(scale(datos[,6:19])), cor = TRUE)
+cp <- princomp(~., data = as.data.frame(scale(datos[,6:19])), cor = TRUE)
 
 cp$loadings
 write.csv2(cp$loadings, file = "./resultados/cargas.factoriales.csv")
@@ -66,13 +68,11 @@ cp$sdev^2 # 5 componentes segun regla de Kaiser
              ggtheme = theme_tfm()) +
     theme(legend.position = "right") + labs(title = "B"))
 
-(varplot <- fviz_pca_var(cp2, col.var = "contrib",
+(varplot <- fviz_pca_var(cp2, labelsize = 3, col.var = "contrib",
              gradient.cols = c("#0c8890","#54B65D", "#D42828"),
              repel = TRUE, legend.title = "Contribution",
              ggtheme = theme_tfm()) +
     theme(legend.position = "right") + labs(title = "A"))
-library(patchwork)
-win.graph()
 (p1 <- wrap_plots(varplot + indplot ))
 ggsave("./resultados/graficas3/PCA_doble.png", width = 180, height = 80, units = "mm", dpi = 1000, scale = 1.25)
 
