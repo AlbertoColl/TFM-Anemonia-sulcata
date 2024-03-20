@@ -27,40 +27,44 @@ datos <- datos %>% select(-c(MDA.pie, MDA.tent, proteina.pie, proteina.tent)) %>
   rename(MDA.col = MDA.pie.2, MDA.tent = MDA.tent.2,
          SOD.col = SOD.pie, CAT.col = CAT.pie,
          GST.col = GST.pie, DTD.col = DTD.pie,
-         G6PDH.col = G6PDH.pie, TEAC.col = TEAC.pie)
+         G6PDH.col = G6PDH.pie, TEAC.col = TEAC.pie,
+         GPx.col = GPx.pie, GR.col = GR.pie)
 
 ### Matriz de correlacion ----
-datos_cor <- cor(datos[,6:19])
+datos_cor <- cor(datos[,6:23])
 cor.plot(datos_cor)
 det(datos_cor)
 
 ### Contrastes de correlacion y KMO ----
 
-mvn(datos[,6:19], mvnTest = "mardia") # Sin proteina ni clorofila, el conjunto de datos es normal
+mvn(datos[,6:23], mvnTest = "mardia") # Sin proteina ni clorofila, el conjunto de datos es normal
 
-cortest.bartlett(datos[,6:19], nrow(datos))
+cortest.bartlett(datos[,6:23], nrow(datos))
 # Se rechaza H0, la matriz de correlacion es diferente a la matriz identidad
 
-KMO(datos_cor) # 0.49 global, aceptable. GST tent, G6PDH tent y TEAC tent tienen poca correlacion parcial con el resto pero aportan informcion importante.
+KMO(datos_cor) # 0.41 global, aceptable. GST tent, G6PDH tent y TEAC tent tienen poca correlacion parcial con el resto pero aportan informcion importante.
 
 ### Modelo PCA y eleccion de numero de componentes ----
-cp <- princomp(~., data = as.data.frame(scale(datos[,6:19])), cor = TRUE)
+cp <- princomp(~., data = as.data.frame(scale(datos[,6:23])), cor = TRUE)
 
 cp$loadings
 write.csv2(cp$loadings, file = "./resultados/cargas.factoriales.csv")
 summary(cp)
-# 5 componentes ya superan 70 % varianza
-screeplot(cp, type = "lines") # 4 componentes
-cp$sdev^2 # 5 componentes segun regla de Kaiser
+# 4 componentes ya superan 70 % varianza
+screeplot(cp, type = "lines") # 4 o 5 componentes
+cp$sdev^2 # 6 componentes segun regla de Kaiser
 
 # Voy a seleccionar 5 componentes
 
 ### Biplot y graficas ----
 
-(biplot <- fviz_pca_biplot(cp, col.ind = datos$tratamiento,
-                palette = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C"),
-                alpha.var = "cos2", col.var = "gray20",
-                repel = TRUE, label = "var", ggtheme = theme_tfm()))
+(biplot <- fviz_pca_biplot(cp, col.ind = "gray30", alpha.ind = 0.8,
+                alpha.var = "contrib", col.var = "contrib",
+                gradient.cols = c("#0c8890","#54B65D", "#D42828"),
+                repel = TRUE, label = "var", ggtheme = theme_tfm(),
+                select.var = list(contrib = 15), labelsize = 2))
+ggsave("./resultados/graficas3/PCA_biplot.png", width = 90, height = 90, units = "mm", dpi = 1000, scale = 1.25)
+
 
 (indplot <- fviz_pca_ind(cp, col.ind = datos$tratamiento,
              palette = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C"),
@@ -68,13 +72,14 @@ cp$sdev^2 # 5 componentes segun regla de Kaiser
              ggtheme = theme_tfm()) +
     theme(legend.position = "right") + labs(title = "B"))
 
-(varplot <- fviz_pca_var(cp2, labelsize = 3, col.var = "contrib",
+(varplot <- fviz_pca_var(cp, labelsize = 2, col.var = "contrib",
              gradient.cols = c("#0c8890","#54B65D", "#D42828"),
-             repel = TRUE, legend.title = "Contribution",
-             ggtheme = theme_tfm()) +
-    theme(legend.position = "right") + labs(title = "A"))
-(p1 <- wrap_plots(varplot + indplot ))
-ggsave("./resultados/graficas3/PCA_doble.png", width = 180, height = 80, units = "mm", dpi = 1000, scale = 1.25)
+             alpha.var = "contrib", repel = T,
+             legend.title = "Contribution", col.circle = "gray75",
+             ggtheme = theme_tfm(), select.var = list(contrib = 15)) + 
+    theme(legend.position = "right"))
+
+ggsave("./resultados/graficas3/PCA_var.png", width = 90, height = 90, units = "mm", dpi = 1000, scale = 1.25)
 
 ### Añadimos las puntuaciones a los datos ----
 datos_pca <- datos
@@ -116,3 +121,5 @@ ac.2
 
 win.graph()
 fviz_cluster(ac.2, datos_scl, ellipse.type = "norm")
+
+

@@ -20,9 +20,9 @@ source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 
 # Comprobacion de normalidad de las variables respuestas GLOBALMENTE
 
-hist(datos$SOD.tent)
+hist(datos$GR.pie)
 scale(datos$SOD.pie)
-shapiro.test(datos$SOD.pie)
+shapiro.test(datos$GPx.tent)
 
 # SOD mas menos bien en el pie y peor en el tentaculo. Shapiro no significativo
 # CAT pie tiene algunos valores extremos, Shapiro salta por poco. Tent igual pero no muy sig, Aceptable creo
@@ -31,11 +31,13 @@ shapiro.test(datos$SOD.pie)
 # G6PDH da problemas en tentaculo, pie no. Comprobar por grupos
 # MDA da problemas en pie, ver por grupos
 # teac perfecto
+# gr perfecta
+# gpx en el limite de ser no normal
 
 # Comprobando normalidad por grupos
 
-hist(filter(datos, tratamiento == "Shade")$SOD.pie)
-shapiro.test(filter(datos, tratamiento == "Low_salinity")$SOD.pie)
+hist(filter(datos, tratamiento == "Shade")$GPx.pie)
+shapiro.test(filter(datos, tratamiento == "Low_salinity")$GPx.tent)
 
 # GST en pie sale un poco rara en el tratamiento sombreado. Hay un valor que es 715 de repente. Yo probaria a quitarlo
 # G6PDH, MDA y CAT estan bien por grupos
@@ -43,7 +45,7 @@ shapiro.test(filter(datos, tratamiento == "Low_salinity")$SOD.pie)
 ### Estudio de datos anómalos e influyentes ---- 
 
 
-ggplot(datos, aes(x = tratamiento, y = SOD.pie, color = tratamiento)) +
+ggplot(datos, aes(x = tratamiento, y = GPx.pie, color = tratamiento)) +
   #geom_boxplot(alpha = 0) +
   geom_point(position = position_jitter(height = 0, width = 0.1), size = 2)
 
@@ -63,7 +65,7 @@ datos <- datos %>% select(-c(MDA.pie, MDA.tent)) # Primera medida de MDA no vale
 
 ### Ajuste de modelos ----
 
-modelos <- lapply(colnames(datos[c(4:21)]), function(x){
+modelos <- lapply(colnames(datos[c(4:25)]), function(x){
   aov(formula = as.formula(paste0(x, " ~ tratamiento")), datos)})
 
 # NORMALIDAD DE RESIDUOS
@@ -79,16 +81,16 @@ sapply(modelos, function(x){
 
 # RESULTADOS DEL ANOVA
 
-for (i in c(1:18)) {
-  print(colnames(datos[4:21][i]))
+for (i in c(1:22)) {
+  print(colnames(datos[4:25][i]))
   print(summary(modelos[[i]]))}
 
 
 ### Elaboración de gráficas y test post-hoc ----
 
 # Bucle construccion de estadisticos de resumen, grafica y test post hoc Tukey
-for (n in c(1:18)) {
-  i <- colnames(datos[4:21])[[n]]
+for (n in c(1:22)) {
+  i <- colnames(datos[4:25])[[n]]
   tabla_summ <- datos %>%  group_by(tratamiento) %>% 
     summarise(media = mean(get(i), na.rm = T),
               desvest = sd(get(i), na.rm = T),
@@ -115,7 +117,7 @@ for (n in c(1:18)) {
 # Problema: no salen los puntos de datos
 # Solo se conservan en 3 graficas por algun motivo que no entiendo.
 plots <- list()
-plots <- lapply(colnames(datos[4:21]), function(x){readRDS(paste0("./resultados/graficas2/", x, "_RDS"))})
+plots <- lapply(colnames(datos[4:25]), function(x){readRDS(paste0("./resultados/graficas2/", x, "_RDS"))})
 
 # SOD
 (p2 <- wrap_plots(plots[3:4]))
@@ -145,10 +147,16 @@ ggsave(paste0("./resultados/graficas3/MDA.png"), width = 180, height = 112.5, un
 (p8 <- wrap_plots(plots[17:18]))
 ggsave(paste0("./resultados/graficas3/TEAC.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
+# GPx
+(p9 <- wrap_plots(plots[19:20]))
+ggsave(paste0("./resultados/graficas3/GPx.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
+# GPx
+(p10 <- wrap_plots(plots[21:22]))
+ggsave(paste0("./resultados/graficas3/GR.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 ### Otros test: ----
 
-t.test(datos$G6PDH.pie, datos$G6PDH.tent, paired = T)
+t.test(datos$GR.pie, datos$GR.tent, paired = T)
 # Diferente nivel de SOD en pie y tentaculo, paired t test con pvalor 5.691e-05
 # Diferente nivel de CAT en pie y tentaculo, paired t test con pvalor 4.073e-07
 # gst tambien con p valor 9.043e-07

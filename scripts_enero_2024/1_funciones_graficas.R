@@ -49,13 +49,12 @@ barras_tfm <- function(){
       i == "TEAC.pie" | i == "TEAC.tent"~ "Trolox equivalent μM",
       i == "GST.pie" | i == "GST.tent" ~ "mU / mg  of protein",
       i == "DTD.pie" | i == "DTD.tent" ~ "mU / mg  of protein",
+      i == "GR.pie" | i == "GR.tent" ~ "mU / mg  of protein",
+      i == "GPx.pie" | i == "GPx.tent" ~ "mU / mg  of protein",
       TRUE ~ "U / mg  of protein")) +
     xlab("Treatment") + # Omitir?
     scale_color_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C")) +
     ylim(c(0, 1.4*(max(tabla_summ$media) + max(tabla_summ$error)))) +
-      # Colores 1
-   # ylim(c(0, case_when(i == "CAT.pie" ~  90,i == "DTD.pie" ~  15,i == "GST.pie" ~  450,i == "MDA.pie.2"| i == "MDA.tent.2" ~  90,i == "SOD.pie"| i == "SOD.tent" ~  150,  i == "TEAC.pie"| i == "TEAC.tent" ~  500,i == "CAT.tent" | i == "DTD.tent" | i == "GST.tent" ~ max(tabla_summ$media) * 2, TRUE ~ max(tabla_summ$media) * 1.2))) +
-    #labs(title = i) +
     theme_tfm()
   
 }
