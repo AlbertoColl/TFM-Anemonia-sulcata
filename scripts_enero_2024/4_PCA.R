@@ -51,18 +51,19 @@ cp$loadings
 write.csv2(cp$loadings, file = "./resultados/cargas.factoriales.csv")
 summary(cp)
 # 4 componentes ya superan 70 % varianza
-screeplot(cp, type = "lines") # 4 o 5 componentes
-cp$sdev^2 # 6 componentes segun regla de Kaiser
+screeplot(cp, type = "lines") # 4 componentes
+cp$sdev^2 # 5 componentes segun regla de Kaiser
 
 # Voy a seleccionar 5 componentes
 
 ### Biplot y graficas ----
 
-(biplot <- fviz_pca_biplot(cp, col.ind = "gray30", alpha.ind = 0.8,
-                alpha.var = "contrib", col.var = "contrib",
-                gradient.cols = c("#0c8890","#54B65D", "#D42828"),
-                repel = TRUE, label = "var", ggtheme = theme_tfm(),
-                select.var = list(contrib = 15), labelsize = 2))
+(biplot <- fviz_pca_biplot(cp, axes = c(1,2), col.ind = "slateblue4",
+                           alpha.ind = 0.4, alpha.var = "contrib",
+                           col.var = "contrib", 
+                           gradient.cols = c("#0c8890","#54B65D", "#D42828"), 
+                           repel = TRUE, label = "var", ggtheme = theme_tfm(),
+                           select.var = list(contrib = 15), labelsize = 3))
 ggsave("./resultados/graficas3/PCA_biplot.png", width = 90, height = 90, units = "mm", dpi = 1000, scale = 1.25)
 
 
@@ -85,41 +86,45 @@ ggsave("./resultados/graficas3/PCA_var.png", width = 90, height = 90, units = "m
 datos_pca <- datos
 datos_pca <- cbind(datos_pca, cp1 = cp$scores[,1], cp2 = cp$scores[,2], cp3 = cp$scores[,3], cp4 = cp$scores[,4])
 
-### Ver componentes principales por grupo ----
-i <- "cp3"
-tabla_summ <- datos_pca %>%  group_by(tratamiento) %>% 
-  summarise(media = mean(get(i), na.rm = T),
-            desvest = sd(get(i), na.rm = T),
-            error = desvest/sqrt(sum(!is.na(get(i)))))
-ggplot(tabla_summ, aes(x = tratamiento, y = media, color = tratamiento)) +
-  geom_col(aes(fill = tratamiento), alpha = 0.2) +
-  geom_errorbar(aes(ymax = media + error, ymin = media- error), width = 0.7, color = "gray55") +
-  geom_point(data = datos_pca, aes(y = cp1), position = position_jitter(height = 0, width = 0.1), size = 2)
+### PCA por tejido ----
+# PIE
+datos_p <- datos %>% select(-SOD.tent, -CAT.tent, -GPx.tent, -GR.tent, -GST.tent, -DTD.tent, -G6PDH.tent, -TEAC.tent, -MDA.tent)
 
-### ANOVAS por PC----
-m1 <- aov(cp4 ~ tratamiento, datos_pca)
-summary(m1)
+datos_p_cor <- cor(datos_p[6:14])
+det(datos_p_cor)
+mvn(datos_p[,6:14], mvnTest = "mardia")
+cortest.bartlett(datos_p[,6:14], nrow(datos))
+KMO(datos_p_cor)
 
+cp_p <- princomp(~., data = as.data.frame(scale(datos_p[,6:14])), cor = TRUE)
+summary(cp_p) # 3 componentes
+screeplot(cp_p, type = "lines") # 2-3 componentes
+cp_p$sdev^2 # 3 componentes segun regla de Kaiser
 
-### CLUSTERING ----
+(biplot <- fviz_pca_biplot(cp_p, axes = c(1,2), col.ind = "slateblue4",
+                           alpha.ind = 0.4, alpha.var = "contrib",
+                           col.var = "contrib", 
+                           gradient.cols = c("#0c8890","#54B65D", "#D42828"), 
+                           repel = TRUE, label = "var", ggtheme = theme_tfm(),
+                           labelsize = 3))
 
-datos_scl <- scale(datos[-8,6:19])
-#datos_scl <- datos_scl[-8,]
-distancia <- dist(datos_scl)
+# TENTACULO
+datos_t <- datos %>% select(-SOD.col, -CAT.col, -GPx.col, -GR.col, -GST.col, -DTD.col, -G6PDH.col, -TEAC.col, -MDA.col)
 
-ac <- hclust(distancia)
-win.graph()
-plot(ac)
+datos_t_cor <- cor(datos_t[6:14])
+det(datos_t_cor)
+mvn(datos_t[,6:14], mvnTest = "mardia")
+cortest.bartlett(datos_t[,6:14], nrow(datos))
+KMO(datos_t_cor)
 
+cp_t <- princomp(~., data = as.data.frame(scale(datos_t[,6:14])), cor = TRUE)
+summary(cp_t) # 4 componentes
+screeplot(cp_t, type = "lines") #3-4 componentes
+cp_t$sdev^2 # 3 componentes segun regla de Kaiser
 
-fviz_nbclust(datos_scl, kmeans, method = "wss")
-set.seed(999)
-
-ac.2 <- kmeans(as.matrix(datos_scl), 3)
-ac.2
-
-
-win.graph()
-fviz_cluster(ac.2, datos_scl, ellipse.type = "norm")
-
-
+(biplot <- fviz_pca_biplot(cp_t, axes = c(1,2), col.ind = "slateblue4",
+                           alpha.ind = 0.4, alpha.var = "contrib",
+                           col.var = "contrib", 
+                           gradient.cols = c("#0c8890","#54B65D", "#D42828"), 
+                           repel = TRUE, label = "var", ggtheme = theme_tfm(),
+                           labelsize = 3))
