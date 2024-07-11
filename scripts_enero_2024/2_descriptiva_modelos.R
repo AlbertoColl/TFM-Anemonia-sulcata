@@ -10,12 +10,16 @@ library(patchwork)
 
 ### Setup----
 
-setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
-source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
-#source(file = "./scripts/0_data_home.R") # En casa
+# Directorio en laboratorio: C:/Users/Usuario/Documents/TFM-Anemonia-sulcata
+# Directorio en portatil: D:/collf/Documents/GitHub/TFM-Anemonia-sulcata
+
+setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata")
+#source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
+source(file = "./scripts_enero_2024/0_data_home.R") # En casa
 
 source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 
+print(":)")
 ### Análisis exploratorio de datos ----
 
 # Comprobacion de normalidad de las variables respuestas GLOBALMENTE
@@ -104,56 +108,82 @@ for (n in c(1:22)) {
   } else {
     tabla_summ$tukey <- c("", "", "", "")
   }
-  (p <- barras_tfm() + labs(title = case_when(str_detect(i, "pie") == T  ~ "A",
-                                               str_detect(i, "tent") == T ~ "B",
+  (p <- barras_tfm() + labs(subtitle = case_when(str_detect(i, "pie") == T  ~ "Column",
+                                               str_detect(i, "tent") == T ~ "Tentacle",
                                                TRUE ~ "")))
-  saveRDS(p, paste0("./resultados/graficas2/", i, "_RDS"))
-  ggsave(paste0("./resultados/graficas2/", i, ".png"), width = 90, height = 112.5, units = "mm", dpi = 1000)
+  saveRDS(p, paste0("./resultados/graficas4/", i, "_RDS"))
+  ggsave(paste0("./resultados/graficas4/", i, ".png"), width = 90, height = 112.5, units = "mm", dpi = 1000)
 }
 
 
 ### Patchwork para figuras finales ----
 
-# Problema: no salen los puntos de datos
-# Solo se conservan en 3 graficas por algun motivo que no entiendo.
 plots <- list()
-plots <- lapply(colnames(datos[4:25]), function(x){readRDS(paste0("./resultados/graficas2/", x, "_RDS"))})
+plots <- lapply(colnames(datos[4:25]), function(x){readRDS(paste0("./resultados/graficas4/", x, "_RDS"))})
 
-# SOD
-(p2 <- wrap_plots(plots[3:4]))
-ggsave(paste0("./resultados/graficas3/SOD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+# SOD + CAT
+(p2 <- wrap_plots(plots[3:4]) +
+    labs(title = "SOD activity") +
+    theme(plot.title = element_text(hjust = -0.7))) # -2.4 left aligned
+ggsave(paste0("./resultados/graficas5/SOD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
-# CAT
-(p3 <- wrap_plots(plots[5:6]))
-ggsave(paste0("./resultados/graficas3/CAT.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+(p3 <- wrap_plots(plots[5:6]) +
+    labs(title = "CAT activity") +
+    theme(plot.title = element_text(hjust = -0.7))) # -2.35 left aligned
+ggsave(paste0("./resultados/graficas5/CAT.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
-# GST
-(p4 <- wrap_plots(plots[7:8]))
-ggsave(paste0("./resultados/graficas3/GST.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+(pf_23 <-  p2/p3)
+ggsave(paste0("./resultados/graficas5/compuestaSODCAT.png"), width = 180, height = 225, units = "mm", dpi = 1000)
 
-# DTD
-(p5 <- wrap_plots(plots[9:10]))
-ggsave(paste0("./resultados/graficas3/DTD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+# GST + DTD
+(p4 <- wrap_plots(plots[7:8]) +
+    labs(title = "GST activity") +
+    theme(plot.title = element_text(hjust = -0.7))) # -2.45 left aligned
+ggsave(paste0("./resultados/graficas5/GST.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
-# G6PDH
-(p6 <- wrap_plots(plots[11:12]))
-ggsave(paste0("./resultados/graficas3/G6PDH.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+(p5 <- wrap_plots(plots[9:10]) +
+    labs(title = "DTD activity") +
+    theme(plot.title = element_text(hjust = -0.65))) # -2.35 left aligned
+ggsave(paste0("./resultados/graficas5/DTD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
-# MDA
-(p7 <- wrap_plots(plots[13:14]))
-ggsave(paste0("./resultados/graficas3/MDA.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+(pf_45 <-  p4/p5)
+ggsave(paste0("./resultados/graficas5/compuestaGSTDTD.png"), width = 180, height = 225, units = "mm", dpi = 1000)
 
-# TEAC
-(p8 <- wrap_plots(plots[17:18]))
-ggsave(paste0("./resultados/graficas3/TEAC.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+# G6PDH gpx y gr
+(p6 <- wrap_plots(plots[11:12]) +
+    labs(title = "G6PDH activity") +
+    theme(plot.title = element_text(hjust = -0.75))) # -2.58 left aligned
+ggsave(paste0("./resultados/graficas5/G6PDH.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
-# GPx
-(p9 <- wrap_plots(plots[19:20]))
-ggsave(paste0("./resultados/graficas3/GPx.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+(p9 <- wrap_plots(plots[19:20]) +
+    labs(title = "GPx activity") +
+    theme(plot.title = element_text(hjust = -0.6))) # -2.44 left aligned
+ggsave(paste0("./resultados/graficas5/GPx.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
-# GPx
-(p10 <- wrap_plots(plots[21:22]))
-ggsave(paste0("./resultados/graficas3/GR.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+(p10 <- wrap_plots(plots[21:22]) +
+    labs(title = "GR activity") +
+    theme(plot.title = element_text(hjust = -0.52))) # -2.16 left aligned
+ggsave(paste0("./resultados/graficas5/GR.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+(pf_9106 <-  p9/p10/p6)
+ggsave(paste0("./resultados/graficas5/compuestaGPxGRG6PDH.png"), width = 180, height = (225+112.5), units = "mm", dpi = 1000)
+
+# TEAC y MDA
+
+(p8 <- wrap_plots(plots[17:18]) +
+    labs(title = "Total Antioxidant Capacity (TEAC)") +
+    theme(plot.title = element_text(hjust = 4.5))) # 8 left aligned
+ggsave(paste0("./resultados/graficas5/TEAC.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+(p7 <- wrap_plots(plots[13:14]) +
+    labs(title = "MDA") +
+    theme(plot.title = element_text(hjust =  -0.3))) # -1.62 left aligned
+ggsave(paste0("./resultados/graficas5/MDA.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+(pf_87 <-  p8/p7)
+ggsave(paste0("./resultados/graficas5/compuestaTEACMDA.png"), width = 180, height = 225, units = "mm", dpi = 1000)
+
+
 ### Otros test: ----
 
 t.test(datos$GR.pie, datos$GR.tent, paired = T)

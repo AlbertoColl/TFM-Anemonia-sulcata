@@ -8,20 +8,21 @@
 library(tidyverse)
 library(ggthemr)
 
-# Directorio en laboratorio: C:/Users/Usuario/Documents/TFM-Ortiguilla
-# Directorio en portatil: D:/collf/Documents/GitHub/TFM-Ortiguilla
+# Directorio en laboratorio: C:/Users/Usuario/Documents/TFM-Anemonia-sulcata
+# Directorio en portatil: D:/collf/Documents/GitHub/TFM-Anemonia-sulcata
 
-setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
+setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata")
 ggthemr("fresh")
 
-source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
-#source(file = "./scripts_enero_2024/0_data_home.R") # En casa
+#source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
+source(file = "./scripts_enero_2024/0_data_home.R") # En casa
 
 ## Definicion del tema y formato de las graficas ----
 theme_tfm <- function(){
   theme(panel.background = element_rect(fill = "gray99"),
         axis.text = element_text(size = 9),
-        plot.title = element_text(size = 14, face = "bold", hjust = 1),
+        plot.subtitle = element_text(size = 12, face = "bold", hjust = 0.5, vjust = -.5),
+        plot.title = element_text(hjust = 0.5),
         strip.text.x = element_text(size = 12, face = "bold", vjust = 0),
         axis.title = element_text(size = 12),
         legend.position = "none",
@@ -52,8 +53,9 @@ barras_tfm <- function(){
       i == "GR.pie" | i == "GR.tent" ~ "mU / mg  of protein",
       i == "GPx.pie" | i == "GPx.tent" ~ "mU / mg  of protein",
       TRUE ~ "U / mg  of protein")) +
-    xlab("Treatment") + # Omitir?
+    xlab("Condition") + # Omitir?
     scale_color_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C")) +
+    scale_x_discrete(labels = c('C','LS','BW', "IMTA")) +
     ylim(c(0, 1.4*(max(tabla_summ$media) + max(tabla_summ$error)))) +
     theme_tfm()
   

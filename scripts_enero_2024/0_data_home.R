@@ -12,3 +12,6 @@ datos <- read.csv2("./datos/datos_TFM completos.csv", numerals = "warn.loss", en
 
 # Traducir nombres de variables
 datos$tratamiento <- factor(datos$tratamiento, levels = c("Control", "Oscuro", "Salobre", "IMTA"), labels = c("Control", "Shade", "Low_salinity", "IMTA"))
+
+# Originalmente Shade y Low_salinity
+# Cambiar a Limited_sunlight y Brackish_water? o a LS y BW?

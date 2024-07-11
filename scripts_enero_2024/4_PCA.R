@@ -12,11 +12,11 @@ library(factoextra)
 library(patchwork)
 
 
-setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
-#setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") #portatil
+#setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
+setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") #portatil
 
-source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
-#source(file = "./scripts_enero_2024/0_data_home.R") # portatil
+#source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
+source(file = "./scripts_enero_2024/0_data_home.R") # portatil
 
 source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 ggthemr("fresh")
@@ -63,7 +63,8 @@ cp$sdev^2 # 5 componentes segun regla de Kaiser
                            col.var = "contrib", 
                            gradient.cols = c("#0c8890","#54B65D", "#D42828"), 
                            repel = TRUE, label = "var", ggtheme = theme_tfm(),
-                           select.var = list(contrib = 15), labelsize = 3))
+                           select.var = list(contrib = 15), labelsize = 3) + 
+   theme(plot.title = element_text(hjust= 0.5)))
 ggsave("./resultados/graficas3/PCA_biplot.png", width = 90, height = 90, units = "mm", dpi = 1000, scale = 1.25)
 
 
