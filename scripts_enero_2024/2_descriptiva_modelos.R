@@ -7,15 +7,18 @@ library(tidyverse)
 library(car)
 library(multcompView)
 library(patchwork)
+library(rstatix)
+library(ggpubr)
+
 
 ### Setup----
 
-# Directorio en laboratorio: C:/Users/Usuario/Documents/TFM-Anemonia-sulcata
+# Directorio en laboratorio: C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata
 # Directorio en portatil: D:/collf/Documents/GitHub/TFM-Anemonia-sulcata
 
-setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata")
-#source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
-source(file = "./scripts_enero_2024/0_data_home.R") # En casa
+setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
+source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
+#source(file = "./scripts_enero_2024/0_data_home.R") # En casa
 
 source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 
@@ -185,29 +188,38 @@ ggsave(paste0("./resultados/graficas5/compuestaTEACMDA.png"), width = 180, heigh
 
 ### Otros test: ----
 
-library(rstatix)
-
-t.test(datos$GR.pie, datos$GR.tent, paired = T)
-
 datos_t <- read.csv2("./datos/datos_t_test.csv", numerals = "warn.loss", encoding = "latin1") %>% 
   mutate(tejido = as.factor(tejido))
   
 datos.long <- datos_t %>%
-  select(-tratamiento, -n, -muestra) %>% 
-  pivot_longer(-tejido, names_to = "variables", values_to = "value")
+  select(-tratamiento, -n, -muestra, -proteina.pie) %>% 
+  pivot_longer(-tejido, names_to = "variables", values_to = "value") %>% 
+  mutate(value = as.double(value))
+
+datos.long$variables <- factor(datos.long$variables, levels = c("SOD.pie", "CAT.pie", "GPx.pie", "GR.pie", "G6PDH.pie", "GST.pie", "DTD.pie", "TEAC.pie", "MDA.pie.2"), labels = c("SOD", "CAT", "GPx", "GR", "G6PDH", "GST", "DTD", "TEAC", "MDA"))
 
 
-paired.t.test <- datos.long %>% 
-  mutate(value = as.double(value)) %>% 
+(paired.t.test <- datos.long  %>% 
   group_by(variables) %>% 
   t_test(value ~ tejido, paired = T) %>% 
   adjust_pvalue(method = "BH") %>% 
-  add_significance()
+  add_significance())
 
-# Diferente nivel de SOD en pie y tentaculo, paired t test con pvalor 5.691e-05
-# Diferente nivel de CAT en pie y tentaculo, paired t test con pvalor 4.073e-07
-# gst tambien con p valor 9.043e-07
-# DTD TB CON P VALOR 8.062e-10
-# glucosa 6 fosfato dh tb 3.01e-05
-# mda 0.005902 tambien diferentes.
-# teac no, niveles iguales en pie y tentaculo
+
+# Create the plot
+
+paired.t.test <- paired.t.test %>% add_xy_position(x = "tejido", scales = "free", fun = "mean_sd")
+
+datos.long %>% 
+  group_by(variables, tejido) %>%
+  get_summary_stats(type = "mean_se") %>% 
+  ggbarplot(x = "tejido", y = "mean",
+            fill = "tejido", color = "tejido",
+            alpha = 0.2, legend = "none",  palette = "npg",
+            ylab = "U/mg protein", xlab = FALSE,
+            ggtheme = theme_tfm()) %>% 
+  facet(facet.by = "variables", nrow = 2, scales = "free") +
+  geom_errorbar(aes(x = tejido, color = tejido, ymin = mean, max = mean+se),width = 0.3) +
+  stat_pvalue_manual(paired.t.test, label = "p.adj.signif",
+                     hide.ns = T)
+ggsave
