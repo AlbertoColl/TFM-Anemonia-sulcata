@@ -9,8 +9,9 @@ library(rstatix)
 library(ggpubr)
 library(multcompView)
 
+setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") # portatil
 
-setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
+#setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")  # lab
 datos_c <- read.csv2("./datos/datos_peso_REVISION.csv", numerals = "warn.loss", encoding = "latin1")%>% 
   mutate(tratamiento = as.factor(tratamiento))
 
@@ -23,10 +24,10 @@ datos_c$tratamiento <- factor(datos_c$tratamiento, levels = c("Control", "Oscuro
 ### Exploración de datos ----
 
 # Observamos la distribución de los datos en general y por grupo
-hist(datos_c$ganancia.de.peso.total..g.)
+hist(datos_c$incremento.n)
 datos_c %>% 
   group_by(tratamiento) %>% 
-  shapiro_test(ganancia.de.peso.total..g.) 
+  shapiro_test(incremento.n) 
 
 # Ambas variable respuesta (incrmento en n y ganancia de peso total son normales en los tratamientos salvo la ganancia de peso para el IMTA.
 
@@ -112,7 +113,7 @@ ggplot(tabla_sum_2, aes(x = tratamiento)) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   theme_tfm() +
   ylab("Difference in total number of individuals") +
-  labs_pubr() +
+  #labs_pubr() +
   guides(fill = "none") +
   scale_fill_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C")) +
   scale_color_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C"))

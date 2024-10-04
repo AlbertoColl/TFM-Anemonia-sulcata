@@ -19,7 +19,6 @@ source(file = "./scripts_enero_2024/0_data_home.R") # En casa
 
 source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 
-print(":)")
 ### Análisis exploratorio de datos ----
 
 # Comprobacion de normalidad de las variables respuestas GLOBALMENTE
@@ -186,7 +185,25 @@ ggsave(paste0("./resultados/graficas5/compuestaTEACMDA.png"), width = 180, heigh
 
 ### Otros test: ----
 
+library(rstatix)
+
 t.test(datos$GR.pie, datos$GR.tent, paired = T)
+
+datos_t <- read.csv2("./datos/datos_t_test.csv", numerals = "warn.loss", encoding = "latin1") %>% 
+  mutate(tejido = as.factor(tejido))
+  
+datos.long <- datos_t %>%
+  select(-tratamiento, -n, -muestra) %>% 
+  pivot_longer(-tejido, names_to = "variables", values_to = "value")
+
+
+paired.t.test <- datos.long %>% 
+  mutate(value = as.double(value)) %>% 
+  group_by(variables) %>% 
+  t_test(value ~ tejido, paired = T) %>% 
+  adjust_pvalue(method = "BH") %>% 
+  add_significance()
+
 # Diferente nivel de SOD en pie y tentaculo, paired t test con pvalor 5.691e-05
 # Diferente nivel de CAT en pie y tentaculo, paired t test con pvalor 4.073e-07
 # gst tambien con p valor 9.043e-07
