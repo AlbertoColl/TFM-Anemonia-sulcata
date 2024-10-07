@@ -56,9 +56,32 @@ barras_tfm <- function(){
     xlab("Condition") + # Omitir?
     scale_color_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C")) +
     scale_x_discrete(labels = c('C','LS','BW', "IMTA")) +
-    ylim(c(0, 1.4*(max(tabla_summ$media) + max(tabla_summ$error)))) +
+    ylim(0,110) +
+    #ylim(c(0, 1.4*(max(tabla_summ$media) + max(tabla_summ$error)))) +
     theme_tfm()
   
 }
 
-
+barras_articulo <- function(){
+  ggplot() +
+    geom_errorbar(data = tabla_summ, aes(x = tratamiento, ymax = media + error, ymin = media- error), width = 0.7, color = "gray55") +
+    geom_col(data = tabla_summ, aes(x = tratamiento, y = media, fill = tratamiento, color = tratamiento),  alpha = 0.1, linewidth = 1) +
+    #geom_point(data = datos, aes(x = tratamiento, y = get(i), color = tratamiento), alpha = 0.7, size = 2) +
+    geom_text(data = tabla_summ, aes(x = tratamiento, y = media + error, label = tukey), color = "grey5", vjust = -0.8, size = 3.5, fontface = "bold") +
+    facet_wrap(~tejido) +
+    ylab(case_when(
+      i == "proteina" ~ " protein mg / ml",
+      i == "MDA" ~ "μM  MDA",
+      i == "TEAC"~ "Trolox equivalent μM",
+      i == "GST" ~ "mU / mg  of protein",
+      i == "DTD" ~ "mU / mg  of protein",
+      i == "GR" ~ "mU / mg  of protein",
+      i == "GPx" ~ "mU / mg  of protein",
+      TRUE ~ "U / mg  of protein")) +
+    xlab("Condition") + # Omitir?
+    scale_color_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C")) +
+    scale_x_discrete(labels = c('C','LS','BW', "IMTA")) +
+    ylim(c(0, 1.4*(max(tabla_summ$media) + max(tabla_summ$error)))) +
+    theme_tfm()
+  
+}

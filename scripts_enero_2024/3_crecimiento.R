@@ -9,9 +9,9 @@ library(rstatix)
 library(ggpubr)
 library(multcompView)
 
-setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") # portatil
+#setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata") # portatil
 
-#setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")  # lab
+setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")  # lab
 datos_c <- read.csv2("./datos/datos_peso_REVISION.csv", numerals = "warn.loss", encoding = "latin1")%>% 
   mutate(tratamiento = as.factor(tratamiento))
 

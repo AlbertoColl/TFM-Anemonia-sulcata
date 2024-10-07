@@ -113,77 +113,76 @@ for (n in c(1:22)) {
   (p <- barras_tfm() + labs(subtitle = case_when(str_detect(i, "pie") == T  ~ "Column",
                                                str_detect(i, "tent") == T ~ "Tentacle",
                                                TRUE ~ "")))
-  saveRDS(p, paste0("./resultados/graficas4/", i, "_RDS"))
-  ggsave(paste0("./resultados/graficas4/", i, ".png"), width = 90, height = 112.5, units = "mm", dpi = 1000)
+  saveRDS(p, paste0("./resultados/graficas_upd/", i, "_RDS"))
+  ggsave(paste0("./resultados/graficas_upd/", i, ".png"), width = 90, height = 112.5, units = "mm", dpi = 1000)
 }
 
-
+# determinar limite con 1.4*(max(tabla_summ$media) + max(tabla_summ$error))
 ### Patchwork para figuras finales ----
 
-plots <- list()
-plots <- lapply(colnames(datos[4:25]), function(x){readRDS(paste0("./resultados/graficas4/", x, "_RDS"))})
+plots <- lapply(colnames(datos[4:25]), function(x){readRDS(paste0("./resultados/graficas_upd/", x, "_RDS"))})
 
 # SOD + CAT
 (p2 <- wrap_plots(plots[3:4]) +
-    labs(title = "SOD activity") +
-    theme(plot.title = element_text(hjust = -0.7))) # -2.4 left aligned
-ggsave(paste0("./resultados/graficas5/SOD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "A.  SOD activity") +
+    theme(plot.title = element_text(hjust = -3.07))) # -2.4 left aligned
+ggsave(paste0("./resultados/graficas_upd2/SOD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (p3 <- wrap_plots(plots[5:6]) +
-    labs(title = "CAT activity") +
-    theme(plot.title = element_text(hjust = -0.7))) # -2.35 left aligned
-ggsave(paste0("./resultados/graficas5/CAT.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "B.  CAT activity") +
+    theme(plot.title = element_text(hjust = -2.86))) # -2.35 left aligned
+ggsave(paste0("./resultados/graficas_upd2/CAT.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (pf_23 <-  p2/p3)
-ggsave(paste0("./resultados/graficas5/compuestaSODCAT.png"), width = 180, height = 225, units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/compuestaSODCAT.png"), width = 180, height = 225, units = "mm", dpi = 1000)
 
 # GST + DTD
 (p4 <- wrap_plots(plots[7:8]) +
-    labs(title = "GST activity") +
-    theme(plot.title = element_text(hjust = -0.7))) # -2.45 left aligned
-ggsave(paste0("./resultados/graficas5/GST.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "A. GST activity") +
+    theme(plot.title = element_text(hjust = -2.88))) # -2.45 left aligned
+ggsave(paste0("./resultados/graficas_upd2/GST.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (p5 <- wrap_plots(plots[9:10]) +
-    labs(title = "DTD activity") +
-    theme(plot.title = element_text(hjust = -0.65))) # -2.35 left aligned
-ggsave(paste0("./resultados/graficas5/DTD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "B.  DTD activity") +
+    theme(plot.title = element_text(hjust = -2.87))) # -2.35 left aligned
+ggsave(paste0("./resultados/graficas_upd2/DTD.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (pf_45 <-  p4/p5)
-ggsave(paste0("./resultados/graficas5/compuestaGSTDTD.png"), width = 180, height = 225, units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/compuestaGSTDTD.png"), width = 180, height = 225, units = "mm", dpi = 1000)
 
 # G6PDH gpx y gr
 (p6 <- wrap_plots(plots[11:12]) +
-    labs(title = "G6PDH activity") +
-    theme(plot.title = element_text(hjust = -0.75))) # -2.58 left aligned
-ggsave(paste0("./resultados/graficas5/G6PDH.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "C.  G6PDH activity") +
+    theme(plot.title = element_text(hjust = -3.31))) # -2.58 left aligned
+ggsave(paste0("./resultados/graficas_upd2/G6PDH.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (p9 <- wrap_plots(plots[19:20]) +
-    labs(title = "GPx activity") +
-    theme(plot.title = element_text(hjust = -0.6))) # -2.44 left aligned
-ggsave(paste0("./resultados/graficas5/GPx.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "A.  GPx activity") +
+    theme(plot.title = element_text(hjust = -2.8))) # -2.44 left aligned
+ggsave(paste0("./resultados/graficas_upd2/GPx.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (p10 <- wrap_plots(plots[21:22]) +
-    labs(title = "GR activity") +
-    theme(plot.title = element_text(hjust = -0.52))) # -2.16 left aligned
-ggsave(paste0("./resultados/graficas5/GR.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "B.  GR activity") +
+    theme(plot.title = element_text(hjust = -2.63))) # -2.16 left aligned
+ggsave(paste0("./resultados/graficas_upd2/GR.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (pf_9106 <-  p9/p10/p6)
-ggsave(paste0("./resultados/graficas5/compuestaGPxGRG6PDH.png"), width = 180, height = (225+112.5), units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/compuestaGPxGRG6PDH.png"), width = 180, height = (225+112.5), units = "mm", dpi = 1000)
 
 # TEAC y MDA
 
 (p8 <- wrap_plots(plots[17:18]) +
-    labs(title = "Total Antioxidant Capacity (TEAC)") +
-    theme(plot.title = element_text(hjust = 4.5))) # 8 left aligned
-ggsave(paste0("./resultados/graficas5/TEAC.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "A.  Total Antioxidant Capacity (TEAC)") +
+    theme(plot.title = element_text(hjust = 5.1))) # 8 left aligned
+ggsave(paste0("./resultados/graficas_upd2/TEAC.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (p7 <- wrap_plots(plots[13:14]) +
-    labs(title = "MDA") +
-    theme(plot.title = element_text(hjust =  -0.3))) # -1.62 left aligned
-ggsave(paste0("./resultados/graficas5/MDA.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+    labs(title = "B.  MDA") +
+    theme(plot.title = element_text(hjust =  -1.885))) # -1.62 left aligned
+ggsave(paste0("./resultados/graficas_upd2/MDA.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 (pf_87 <-  p8/p7)
-ggsave(paste0("./resultados/graficas5/compuestaTEACMDA.png"), width = 180, height = 225, units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/compuestaTEACMDA.png"), width = 180, height = 225, units = "mm", dpi = 1000)
 
 
 ### Otros test: ----
@@ -215,11 +214,70 @@ datos.long %>%
   get_summary_stats(type = "mean_se") %>% 
   ggbarplot(x = "tejido", y = "mean",
             fill = "tejido", color = "tejido",
-            alpha = 0.2, legend = "none",  palette = "npg",
-            ylab = "U/mg protein", xlab = FALSE,
+            alpha = 0.2, legend = "none",  palette = "npg", linewidth = 1,
+            xlab = FALSE,
             ggtheme = theme_tfm()) %>% 
-  facet(facet.by = "variables", nrow = 2, scales = "free") +
+  facet(facet.by = "variables", nrow = 2, scales = "free", ) +
   geom_errorbar(aes(x = tejido, color = tejido, ymin = mean, max = mean+se),width = 0.3) +
+  scale_x_discrete(labels = c("Column", "Tentacle")) +
   stat_pvalue_manual(paired.t.test, label = "p.adj.signif",
                      hide.ns = T)
-ggsave
+
+ggsave(paste0("./resultados/graficas_upd2/T_TEST.png"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/T_TEST.svg"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+
+
+
+library(plotrix)
+datos_resumen <- group_by(datos_t, tejido) %>% 
+  summarise(SODm = mean(SOD),
+            SODse = std.error(SOD),
+            CATm = mean(CAT),
+            CATse = std.error(CAT),
+            GSTm = mean(GST),
+            GSTse = std.error(GST),
+            DTDm = mean(DTD),
+            DTDse = std.error(DTD),
+            G6PDHm = mean(G6PDH),
+            G6PDHse = std.error(G6PDH),
+            GPXm = mean(GPX),
+            GPXse = std.error(GPX),
+            GRm = mean(GR),
+            GRse = std.error(GR),
+            TEACm = mean(TEAC),
+            TEACse = std.error(TEAC),
+            MDAm = mean(MDA),
+            MDAse = std.error(MDA),)
+
+
+
+
+### Actualizacion graficas ----
+
+datos_t <- read.csv2("./datos/datos_t_test.csv", numerals = "warn.loss", encoding = "latin1", dec = ".") %>% 
+  mutate(tejido = as.factor(tejido),
+         tratamiento = as.factor(tratamiento))
+
+colnames(datos_t) <- c("n", "muestra", "tratamiento", "tejido", "SOD", "CAT", "GST", "DTD", "G6PDH", "MDA", "proteina", "TEAC", "GPX", "GR")
+
+for (n in c(1:10)) {
+  i <- colnames(datos_t[5:14])[[n]]
+  tabla_summ <- datos_t %>%  group_by(tejido,tratamiento) %>% 
+    summarise(media = mean(get(i), na.rm = T),
+              desvest = sd(get(i), na.rm = T),
+              error = desvest/sqrt(sum(!is.na(get(i)))))
+  if (i == "TEAC" | i == "GPx"| i == "G6PDH") {
+    tukey_loop <- TukeyHSD(modelos[[n]])
+    cld.tukey <- multcompLetters4(modelos[[n]], tukey_loop, reversed = T)
+    (letras <- rownames_to_column(as.data.frame(cld.tukey$tratamiento$Letters)))
+    colnames(letras) <- c("tratamiento", "tukey")
+    tabla_summ <- merge(tabla_summ, letras)
+  } else {
+    tabla_summ$tukey <- c("", "", "", "")
+  }
+  (p <- barras_tfm() + labs(subtitle = case_when(str_detect(i, "pie") == T  ~ "Column",
+                                                 str_detect(i, "tent") == T ~ "Tentacle",
+                                                 TRUE ~ "")))
+  saveRDS(p, paste0("./resultados/graficas4/", i, "_RDS"))
+  ggsave(paste0("./resultados/graficas4/", i, ".png"), width = 90, height = 112.5, units = "mm", dpi = 1000)
+}
