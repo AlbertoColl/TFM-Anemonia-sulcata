@@ -120,7 +120,7 @@ tabla_sum_2 <- merge(tabla_sum_2, letras)
 )
 saveRDS(p, "./resultados/graficas_upd/reproduccion.RDS")
 ggsave("./resultados/graficas_upd2/reproduccion.png", width = 90, height = 112.5, units = "mm", dpi = 1000)
-ggsave(paste0("./resultados/graficas_upd2/reproduccion.svg"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/reproduccion.svg"), width = 90, height = 112.5, units = "mm", dpi = 1000)
 
 # INCREMENTO DE PESO
 ggplot(tabla_sum_1, aes(x = tratamiento)) +
@@ -140,7 +140,7 @@ ggplot(tabla_sum_1, aes(x = tratamiento)) +
 
 saveRDS(p, "./resultados/graficas_upd/crecimiento.RDS")
 ggsave("./resultados/graficas_upd2/crecimiento.png", width = 90, height = 112.5, units = "mm", dpi = 1000)
-ggsave(paste0("./resultados/graficas_upd2/crecimiento.svg"), width = 180, height = 112.5, units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/crecimiento.svg"), width = 90, height = 112.5, units = "mm", dpi = 1000)
 
 
   
