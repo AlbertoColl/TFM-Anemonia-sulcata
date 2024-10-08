@@ -104,30 +104,32 @@ tabla_sum_2 <- merge(tabla_sum_2, letras)
 # Graficas final----
 
 # DIFERENCIA NUMERO INDIVIDUOS
-ggplot(tabla_sum_2, aes(x = tratamiento)) +
+(p <- ggplot(tabla_sum_2, aes(x = tratamiento)) +
   geom_col(aes(y = mean, fill = tratamiento, color = tratamiento), alpha = 0.1, linewidth = 1) +
-  geom_errorbar(aes(ymax = mean + se, ymin = mean-se), width = 0.5, color = "gray35") +
-  geom_text(aes(y = (mean+3*se),label = tukey, x = tratamiento), size = 4, fontface = "bold") +
+  geom_errorbar(aes(ymax = mean + se, ymin = mean-se), width = 0.7, color = "gray55") +
+  geom_text(aes(y = (mean+3*se),label = tukey, x = tratamiento), size = 3.5, fontface = "bold", color = "grey5") +
   xlab(NULL) +
   ylim(c(-5, 11)) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red", linewidth = 1) +
   theme_tfm() +
   ylab("Difference in total number of individuals") +
   #labs_pubr() +
   guides(fill = "none") +
   scale_fill_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C")) +
   scale_color_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C"))
-    
-
+)
+saveRDS(p, "./resultados/graficas_upd/reproduccion.RDS")
+ggsave("./resultados/graficas_upd2/reproduccion.png", width = 90, height = 112.5, units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/reproduccion.svg"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 # INCREMENTO DE PESO
 ggplot(tabla_sum_1, aes(x = tratamiento)) +
   geom_col(aes(y = mean, fill = tratamiento, color = tratamiento), alpha = 0.1, linewidth = 1) +
-  geom_errorbar(aes(ymax = mean + se, ymin = mean-se), width = 0.5, color = "gray35") +
+  geom_errorbar(aes(ymax = mean + se, ymin = mean-se), width = 0.7, color = "gray55") +
   #geom_text(aes(y = (mean+3*se),label = tukey, x = tratamiento), size = 4, fontface = "bold") +
   xlab(NULL) +
   #ylim(c(-5, 11)) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red", linewidth = 1) +
   theme_tfm() +
   ylab("Change in Total Weight (g)") +
   labs_pubr() +
@@ -136,7 +138,9 @@ ggplot(tabla_sum_1, aes(x = tratamiento)) +
   scale_color_manual(values = c("#0c8890", "#54B65D","#E56A1C", "#FBBC4C"))
 
 
-
+saveRDS(p, "./resultados/graficas_upd/crecimiento.RDS")
+ggsave("./resultados/graficas_upd2/crecimiento.png", width = 90, height = 112.5, units = "mm", dpi = 1000)
+ggsave(paste0("./resultados/graficas_upd2/crecimiento.svg"), width = 180, height = 112.5, units = "mm", dpi = 1000)
 
 
   
