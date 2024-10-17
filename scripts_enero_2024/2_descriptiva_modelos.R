@@ -197,7 +197,10 @@ datos.long <- datos_t %>%
 
 datos.long$variables <- factor(datos.long$variables, levels = c("SOD.pie", "CAT.pie", "GPx.pie", "GR.pie", "G6PDH.pie", "GST.pie", "DTD.pie", "TEAC.pie", "MDA.pie.2"), labels = c("SOD", "CAT", "GPx", "GR", "G6PDH", "GST", "DTD", "TEAC", "MDA"))
 
-
+sum <- datos.long  %>% 
+  group_by(variables, tejido) %>% get_summary_stats(type = "mean_se")
+  
+  
 (paired.t.test <- datos.long  %>% 
   group_by(variables) %>% 
   t_test(value ~ tejido, paired = T) %>% 
