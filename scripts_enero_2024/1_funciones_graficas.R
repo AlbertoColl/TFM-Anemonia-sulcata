@@ -11,7 +11,7 @@ library(ggthemr)
 # Directorio en laboratorio: C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata
 # Directorio en portatil: D:/collf/Documents/GitHub/TFM-Anemonia-sulcata
 
-setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
+setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata")
 ggthemr("fresh")
 
 #source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
