@@ -16,9 +16,9 @@ library(ggpubr)
 # Directorio en laboratorio: C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata
 # Directorio en portatil: D:/collf/Documents/GitHub/TFM-Anemonia-sulcata
 
-setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
-source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
-#source(file = "./scripts_enero_2024/0_data_home.R") # En casa
+setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata")
+#source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
+source(file = "./scripts_enero_2024/0_data_home.R") # En casa
 
 source(file = "./scripts_enero_2024/1_funciones_graficas.R")
 

@@ -11,7 +11,8 @@ library(ggthemr)
 # Directorio en laboratorio: C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata
 # Directorio en portatil: D:/collf/Documents/GitHub/TFM-Anemonia-sulcata
 
-setwd("C:/Users/Usuario/Documents/GitHub/TFM-Anemonia-sulcata")
+setwd("D:/collf/Documents/GitHub/TFM-Anemonia-sulcata")
+ggthemr("fresh")
 
 #source(file = "./scripts_enero_2024/0_data_lab.R") # Laboratorio
 #source(file = "./scripts_enero_2024/0_data_home.R") # En casa
@@ -84,29 +85,3 @@ barras_articulo <- function(){
     theme_tfm()
   
 }
-
-ggthemr("light")
-barras_tfg <- function(){
-  ggplot() +
-    geom_errorbar(data = tabla_summ, aes(x = `corte:tiempo`, ymax = media + error, ymin = media- error), width = 0.7, color = "gray55") +
-    geom_col(data = tabla_summ, aes(x = `corte:tiempo`, y = media, fill = `corte:tiempo`, color = `corte:tiempo`),  alpha = 0.1, linewidth = 1) +
-    geom_text(data = tabla_summ, aes(x = `corte:tiempo`, y = media + error, label = tukey), color = "grey5", vjust = -0.8, size = 3.5, fontface = "bold") +
-    ylab(case_when(
-      i == "proteina_t" | i == "proteina_p"  ~ " protein mg / ml",
-      i == "MDA_t" | i == "MDA_p" ~ "μM  MDA",
-      i == "TEAC_t" | i == "TEAC_p"~ "Trolox equivalent μM",
-      i == "GST_t" | i == "GST_p" ~ "mU / mg  of protein",
-      i == "DTD_t" | i == "DTD_p" ~ "mU / mg  of protein",
-      i == "GR_t" | i == "GR_p" ~ "mU / mg  of protein",
-      i == "GPx_t" | i == "GPx_p" ~ "mU / mg  of protein",
-      TRUE ~ "U / mg  of protein")) +
-    xlab("Treatment") + # Omitir?
-    scale_color_manual(values = c("#62bba5", "#ffb84d", "#37816E", "#F59300" )) +
-    scale_x_discrete(labels = c('Control t0','Dissected t0','Control t1', "Dissected t1")) + #cambiar al apropiado
-    ylim(c(0, 1.4*(max(tabla_summ$media) + max(tabla_summ$error)))) #+
-    #theme_tfm()
-  
-}
-
-
-"#62bba5" "#ffb84d"
